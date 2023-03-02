@@ -98,10 +98,13 @@ class PhoneTextField extends StatefulWidget {
   /// Default value is `Select Country`.
   final String? dialogTitle;
 
+  final TextStyle? textStyle;
+
   const PhoneTextField({
     super.key,
     this.initialCountryCode,
     this.textAlign = TextAlign.left,
+    this.textStyle,
     this.isRequired = true,
     this.initialValue,
     this.controller,
@@ -192,6 +195,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
       textAlign: widget.textAlign,
       controller: widget.controller,
       focusNode: widget.focusNode,
+      style: widget.textStyle,
       decoration: widget.decoration.copyWith(
         prefix: widget.locale.languageCode.toLowerCase() == "ar"
             ? null
@@ -270,6 +274,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
             FittedBox(
               child: Text(
                 '+${_selectedCountry.dialCode}',
+                style: widget.textStyle,
               ),
             ),
             widget.dropdownIcon,
