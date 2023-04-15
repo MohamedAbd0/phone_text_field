@@ -100,12 +100,14 @@ class PhoneTextField extends StatefulWidget {
 
   final TextStyle? textStyle;
 
+  final ValueChanged<String>? onSubmit;
+
   const PhoneTextField({
     super.key,
     this.initialCountryCode,
     this.textAlign = TextAlign.left,
-    this.textStyle,
     this.isRequired = true,
+    this.textStyle,
     this.initialValue,
     this.controller,
     this.focusNode,
@@ -121,6 +123,7 @@ class PhoneTextField extends StatefulWidget {
     this.invalidNumberMessage = 'Invalid Phone Number',
     this.dialogTitle = "Select Country",
     this.searchFieldInputDecoration,
+    this.onSubmit
   });
 
   @override
@@ -141,8 +144,8 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
     _countryList = widget.countries == null
         ? countries
         : countries
-            .where((country) => widget.countries!.contains(country.code))
-            .toList();
+        .where((country) => widget.countries!.contains(country.code))
+        .toList();
 
     final List<Country> unSortcountryList = [..._countryList];
     if (widget.locale.languageCode.toLowerCase() == "ar") {
@@ -192,10 +195,10 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: (widget.controller == null) ? number : null,
+      style: widget.textStyle,
       textAlign: widget.textAlign,
       controller: widget.controller,
       focusNode: widget.focusNode,
-      style: widget.textStyle,
       decoration: widget.decoration.copyWith(
         prefix: widget.locale.languageCode.toLowerCase() == "ar"
             ? null
@@ -233,6 +236,8 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
       enabled: widget.enabled,
       autofocus: widget.autofocus,
       autovalidateMode: widget.autovalidateMode,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: widget.onSubmit,
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly
       ],
