@@ -4,12 +4,10 @@ Phone Number TextFiled is a Flutter plugin that allows you to parse, validate, f
 
 [![Pub Version](https://img.shields.io/pub/v/phone_text_field?logo=flutter&style=for-the-badge)](https://pub.dev/packages/phone_text_field)
 
-
 Demo gif
 -----
 ![image](https://github.com/MohamedAbd0/phone_text_field/blob/main/screenshots/demo.gif)
 
-[link](https://github.com/MohamedAbd0/phone_text_field/blob/main/screenshots/demo.gif)
 
 
 Installation

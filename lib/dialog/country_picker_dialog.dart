@@ -12,6 +12,7 @@ class CountryPickerDialog extends StatefulWidget {
   final InputDecoration? searchFieldInputDecoration;
   final Locale locale;
   final String dialogTitle;
+  final TextStyle? searchTextStyle;
 
   const CountryPickerDialog({
     super.key,
@@ -22,6 +23,7 @@ class CountryPickerDialog extends StatefulWidget {
     this.searchFieldInputDecoration,
     required this.dialogTitle,
     required this.locale,
+    required this.searchTextStyle,
   });
 
   @override
@@ -54,6 +56,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: TextField(
+              style: widget.searchTextStyle,
               decoration: widget.searchFieldInputDecoration ??
                   const InputDecoration(
                     suffixIcon: Icon(Icons.search),

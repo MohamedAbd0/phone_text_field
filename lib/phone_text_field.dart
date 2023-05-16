@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 library phone_text_field;
 
 import 'package:flutter/material.dart';
@@ -98,8 +100,19 @@ class PhoneTextField extends StatefulWidget {
   /// Default value is `Select Country`.
   final String? dialogTitle;
 
+  /// TextStyle of TextFormField
+  ///
+  /// Default value is null.
   final TextStyle? textStyle;
 
+  /// TextStyle of TextFormField when search
+  ///
+  /// Default value is null.
+  final TextStyle? searchTextStyle;
+
+  /// onSubmit of keypoard
+  ///
+  /// Default value is null.
   final ValueChanged<String>? onSubmit;
 
   const PhoneTextField({
@@ -107,7 +120,6 @@ class PhoneTextField extends StatefulWidget {
     this.initialCountryCode,
     this.textAlign = TextAlign.left,
     this.isRequired = true,
-    this.textStyle,
     this.initialValue,
     this.controller,
     this.focusNode,
@@ -123,7 +135,9 @@ class PhoneTextField extends StatefulWidget {
     this.invalidNumberMessage = 'Invalid Phone Number',
     this.dialogTitle = "Select Country",
     this.searchFieldInputDecoration,
-    this.onSubmit
+    this.onSubmit,
+    this.textStyle,
+    this.searchTextStyle,
   });
 
   @override
@@ -144,8 +158,8 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
     _countryList = widget.countries == null
         ? countries
         : countries
-        .where((country) => widget.countries!.contains(country.code))
-        .toList();
+            .where((country) => widget.countries!.contains(country.code))
+            .toList();
 
     final List<Country> unSortcountryList = [..._countryList];
     if (widget.locale.languageCode.toLowerCase() == "ar") {
@@ -257,6 +271,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
           locale: widget.locale,
           selectedCountry: _selectedCountry,
           dialogTitle: widget.dialogTitle!,
+          searchTextStyle: widget.searchTextStyle,
           onCountryChanged: (Country country) {
             _selectedCountry = country;
             setState(() {});
