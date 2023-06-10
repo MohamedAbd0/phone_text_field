@@ -35,7 +35,7 @@ Features
 ----
 - Validate phone number
 - Select country code
-- Allow arabic names
+- Support arabic & english & french 
 
 Usage
 -----

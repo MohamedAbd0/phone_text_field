@@ -5,9 +5,11 @@ library phone_text_field;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'constants/countries.dart';
 import 'dialog/country_picker_dialog.dart';
-import 'model/phone_number.dart';
+import 'helper/countries.dart';
+import 'phone_text_field.dart';
+export 'model/country_code_view_options.dart' show CountryViewOptions;
+export 'model/phone_number.dart' show PhoneNumber;
 
 class PhoneTextField extends StatefulWidget {
   /// How the text should be aligned horizontally.
@@ -95,6 +97,11 @@ class PhoneTextField extends StatefulWidget {
   /// Default is isRequired : true
   final bool isRequired;
 
+  /// to show country code as icon.
+  ///
+  /// Default is showCountryCodeAsIcon : false
+  final bool showCountryCodeAsIcon;
+
   /// Message to be displayed on dialog title
   ///
   /// Default value is `Select Country`.
@@ -115,11 +122,21 @@ class PhoneTextField extends StatefulWidget {
   /// Default value is null.
   final ValueChanged<String>? onSubmit;
 
+  /// to show country result data.
+  /// If [CountryViewOptions.countryNameOnly], to show country name only.
+  /// If [CountryViewOptions.countryNameWithFlag], to show country name with flag.
+  /// If [CountryViewOptions.countryCodeOnly], to show country code only.
+  /// If [CountryViewOptions.countryCodeWithFlag], to show country flag with code.
+  /// If [CountryViewOptions.countryFlagOnly], to show country flag only.
+  /// Default is countryViewOptions : [CountryViewOptions.countryCodeOnly]
+  final CountryViewOptions countryViewOptions;
+
   const PhoneTextField({
     super.key,
     this.initialCountryCode,
     this.textAlign = TextAlign.left,
     this.isRequired = true,
+    this.showCountryCodeAsIcon = false,
     this.initialValue,
     this.controller,
     this.focusNode,
@@ -138,6 +155,7 @@ class PhoneTextField extends StatefulWidget {
     this.onSubmit,
     this.textStyle,
     this.searchTextStyle,
+    this.countryViewOptions = CountryViewOptions.countryCodeOnly,
   });
 
   @override
@@ -154,7 +172,10 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
 
   @override
   void initState() {
+    CountriesHelper.init(widget.locale.languageCode.toLowerCase());
+
     super.initState();
+
     _countryList = widget.countries == null
         ? countries
         : countries
@@ -162,11 +183,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
             .toList();
 
     final List<Country> unSortcountryList = [..._countryList];
-    if (widget.locale.languageCode.toLowerCase() == "ar") {
-      unSortcountryList.sort((a, b) => a.nameAr.compareTo(b.nameAr));
-    } else {
-      unSortcountryList.sort((a, b) => a.name.compareTo(b.name));
-    }
+    unSortcountryList.sort((a, b) => a.name.compareTo(b.name));
 
     _countryList = unSortcountryList;
     filteredCountries = _countryList;
@@ -213,15 +230,25 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
       textAlign: widget.textAlign,
       controller: widget.controller,
       focusNode: widget.focusNode,
-      decoration: widget.decoration.copyWith(
-        prefix: widget.locale.languageCode.toLowerCase() == "ar"
-            ? null
-            : _buildCountryCodeButton(),
-        suffix: widget.locale.languageCode.toLowerCase() == "ar"
-            ? _buildCountryCodeButton()
-            : null,
-        counterText: '',
-      ),
+      decoration: widget.showCountryCodeAsIcon
+          ? widget.decoration.copyWith(
+              prefixIcon: widget.locale.languageCode.toLowerCase() == "ar"
+                  ? null
+                  : _buildCountryCodeButton(),
+              suffixIcon: widget.locale.languageCode.toLowerCase() == "ar"
+                  ? _buildCountryCodeButton()
+                  : null,
+              counterText: '',
+            )
+          : widget.decoration.copyWith(
+              prefix: widget.locale.languageCode.toLowerCase() == "ar"
+                  ? null
+                  : _buildCountryCodeButton(),
+              suffix: widget.locale.languageCode.toLowerCase() == "ar"
+                  ? _buildCountryCodeButton()
+                  : null,
+              counterText: '',
+            ),
       onChanged: (value) async {
         final phoneNumber = PhoneNumber(
           countryISOCode: _selectedCountry.code,
@@ -293,7 +320,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
           children: <Widget>[
             FittedBox(
               child: Text(
-                '+${_selectedCountry.dialCode}',
+                displayReult(widget.countryViewOptions),
                 style: widget.textStyle,
               ),
             ),
@@ -302,5 +329,22 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
         ),
       ),
     );
+  }
+
+  String displayReult(CountryViewOptions countryViewOptions) {
+    switch (countryViewOptions) {
+      case CountryViewOptions.countryCodeOnly:
+        return '+${_selectedCountry.dialCode}';
+      case CountryViewOptions.countryNameOnly:
+        return _selectedCountry.name;
+      case CountryViewOptions.countryFlagOnly:
+        return _selectedCountry.flag;
+      case CountryViewOptions.countryCodeWithFlag:
+        return '${_selectedCountry.flag} +${_selectedCountry.dialCode}';
+      case CountryViewOptions.countryNameWithFlag:
+        return '${_selectedCountry.flag} ${_selectedCountry.name}';
+      default:
+        return '+${_selectedCountry.dialCode}';
+    }
   }
 }

@@ -1,7 +1,8 @@
 // ignore_for_file: always_use_package_imports, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import '../constants/countries.dart';
+import 'package:phone_text_field/helper/extensions/string.dart';
+import '../helper/countries.dart';
 import '../helper/helpers.dart';
 
 class CountryPickerDialog extends StatefulWidget {
@@ -58,9 +59,9 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
             child: TextField(
               style: widget.searchTextStyle,
               decoration: widget.searchFieldInputDecoration ??
-                  const InputDecoration(
-                    suffixIcon: Icon(Icons.search),
-                    hintText: 'Search by name or country code',
+                  InputDecoration(
+                    suffixIcon: const Icon(Icons.search),
+                    hintText: 'search_hint'.tr(),
                   ),
               onChanged: (value) {
                 _filteredCountries = isNumeric(value)
@@ -71,21 +72,13 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                           ),
                         )
                         .toList()
-                    : widget.locale.languageCode.toLowerCase() == "ar"
-                        ? widget.countryList
-                            .where(
-                              (country) => country.nameAr
-                                  .toLowerCase()
-                                  .contains(value.toLowerCase().trim()),
-                            )
-                            .toList()
-                        : widget.countryList
-                            .where(
-                              (country) => country.name
-                                  .toLowerCase()
-                                  .contains(value.toLowerCase().trim()),
-                            )
-                            .toList();
+                    : widget.countryList
+                        .where(
+                          (country) => country.name
+                              .toLowerCase()
+                              .contains(value.toLowerCase().trim()),
+                        )
+                        .toList();
                 if (mounted) setState(() {});
               },
             ),
@@ -99,9 +92,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                   _filteredCountries[index].flag,
                 ),
                 title: Text(
-                  widget.locale.languageCode.toLowerCase() == "ar"
-                      ? _filteredCountries[index].nameAr
-                      : _filteredCountries[index].name,
+                  _filteredCountries[index].name,
                 ),
                 trailing: Text(
                   '+${_filteredCountries[index].dialCode}',

@@ -19,12 +19,12 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        //SfGlobalLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
         Locale('ar'),
         Locale('en'),
+        Locale('fr'),
       ],
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -64,6 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   textScaleFactor: 1.5,
                 ),
                 PhoneTextField(
+                  countryViewOptions: CountryViewOptions.countryCodeOnly,
+                  showCountryCodeAsIcon: true,
                   onChanged: (value) {},
                 ),
               ],
