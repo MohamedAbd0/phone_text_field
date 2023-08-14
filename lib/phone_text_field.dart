@@ -2,8 +2,6 @@
 
 library phone_text_field;
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phone_text_field/helper/extensions/string.dart';
@@ -216,8 +214,6 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
         }
       }
 
-      log('initState: ${_selectedCountry?.name}');
-
       if (number.startsWith('+')) {
         number = number.substring(1);
       }
@@ -236,7 +232,6 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
         );
       }
     } catch (e) {
-      log(e.toString());
       _selectedCountry = _countryList.first;
     }
   }
