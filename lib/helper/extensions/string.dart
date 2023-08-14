@@ -26,4 +26,6 @@ extension StringExtension on String {
 
     return result;
   }
+
+  bool get isInt => int.tryParse(this) != null;
 }

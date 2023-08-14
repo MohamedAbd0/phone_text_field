@@ -2,8 +2,11 @@
 
 library phone_text_field;
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:phone_text_field/helper/extensions/string.dart';
 
 import 'dialog/country_picker_dialog.dart';
 import 'helper/countries.dart';
@@ -172,53 +175,69 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
 
   @override
   void initState() {
-    CountriesHelper.init(widget.locale.languageCode.toLowerCase());
+    try {
+      CountriesHelper.init(widget.locale.languageCode.toLowerCase());
 
-    super.initState();
+      super.initState();
 
-    _countryList = widget.countries == null
-        ? countries
-        : countries
-            .where((country) => widget.countries!.contains(country.code))
-            .toList();
+      _countryList = widget.countries == null
+          ? countries
+          : countries
+              .where((country) => widget.countries!.contains(country.code))
+              .toList();
 
-    final List<Country> unSortcountryList = [..._countryList];
-    unSortcountryList.sort((a, b) => a.name.compareTo(b.name));
+      final List<Country> unSortcountryList = [..._countryList];
+      unSortcountryList.sort((a, b) => a.name.compareTo(b.name));
 
-    _countryList = unSortcountryList;
-    filteredCountries = _countryList;
-    number = widget.initialValue ?? '';
-    if (number.startsWith('+')) {
-      number = number.substring(1);
-      // parse initial value
-      _selectedCountry = countries.firstWhere(
-        (country) => number.startsWith(country.fullCountryCode),
-        orElse: () => _countryList.first,
-      );
+      _countryList = unSortcountryList;
+      filteredCountries = _countryList;
+      number = widget.initialValue ?? '';
 
-      // remove country code from the initial number value
-      number = number.replaceFirst(
-        RegExp("^${_selectedCountry.fullCountryCode}"),
-        "",
-      );
-    } else {
-      _selectedCountry = _countryList.firstWhere(
-        (item) => item.code == (widget.initialCountryCode ?? 'US'),
-        orElse: () => _countryList.first,
-      );
+      if (widget.initialCountryCode != null) {
+        final initCode = widget.initialCountryCode!.replaceAll('+', '');
 
-      // remove country code from the initial number value
+        if (initCode.isInt) {
+          if (_countryList.map((e) => e.dialCode).toList().contains(initCode)) {
+            _selectedCountry = _countryList.firstWhere(
+              (element) => element.dialCode == initCode,
+              orElse: () => _countryList.first,
+            );
+          }
+        } else {
+          if (_countryList
+              .map((e) => e.code)
+              .toList()
+              .contains(initCode.toUpperCase())) {
+            _selectedCountry = _countryList.firstWhere(
+              (element) => element.code == initCode.toUpperCase(),
+              orElse: () => _countryList.first,
+            );
+          }
+        }
+      }
+
+      log('initState: ${_selectedCountry?.name}');
+
       if (number.startsWith('+')) {
-        number = number.replaceFirst(
-          RegExp("^\\+${_selectedCountry.fullCountryCode}"),
-          "",
+        number = number.substring(1);
+      }
+
+      if (number.length > 1) {
+        // parse initial value
+        _selectedCountry = countries.firstWhere(
+          (country) => number.startsWith(country.dialCode),
+          orElse: () => _countryList.first,
         );
-      } else {
+
+        // remove country code from the initial number value
         number = number.replaceFirst(
           RegExp("^${_selectedCountry.fullCountryCode}"),
           "",
         );
       }
+    } catch (e) {
+      log(e.toString());
+      _selectedCountry = _countryList.first;
     }
   }
 

@@ -4,14 +4,12 @@ Phone Number TextFiled is a Flutter plugin that allows you to parse, validate, f
 
 [![Pub Version](https://img.shields.io/pub/v/phone_text_field?logo=flutter&style=for-the-badge)](https://pub.dev/packages/phone_text_field)
 
-Demo gif
------
+## Demo gif
+
 ![image](https://github.com/MohamedAbd0/phone_text_field/blob/main/screenshots/demo.gif)
 
+## Installation
 
-
-Installation
------
 1. Add this to your package's `pubspec.yaml` file:
 
 ```yaml
@@ -31,21 +29,24 @@ $ pub get
 import 'package:phone_text_field/phone_text_field.dart';
 ```
 
-Features
-----
+## Features
+
 - Validate phone number
 - Select country code
-- Support arabic & english & french 
+- Support arabic & english & french
 
-Usage
------
+## Usage
+
 default widget
+
 ```dart
 PhoneTextField(
     onChanged: (value) {},
 ),
 ```
+
 custom text style
+
 ```dart
                 PhoneTextField(
                   locale: const Locale('en'),
@@ -84,6 +85,7 @@ custom text style
 ```
 
 arabic style
+
 ```dart
                 PhoneTextField(
                   locale: const Locale('ar'),
@@ -123,6 +125,7 @@ arabic style
 ```
 
 ## Screenshots
+
 ![](demo.gif)
 
 local(en)
@@ -132,6 +135,5 @@ local(en)
 local(ar)
 ![](screenshots/3.png)
 ![](screenshots/4.png)
-## Contributions
 
-Contributions of any kind are more than welcome! Feel free to fork and improve international_phone_input in any way you want, make a pull request, or open an issue.
+## Contributions
