@@ -5,3 +5,8 @@
 ## 0.0.4
 
 - TODO: mprove the performance.
+
+## 0.0.4
+
+- TODO: mprove the performance.
+- ignore first zero

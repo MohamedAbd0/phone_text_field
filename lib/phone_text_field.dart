@@ -29,7 +29,7 @@ class PhoneTextField extends StatefulWidget {
   /// Controls the text being edited.
   ///
   /// If null, this widget will create its own [TextEditingController].
-  final TextEditingController? controller;
+  //final TextEditingController? controller;
 
   final FocusNode? focusNode;
 
@@ -139,7 +139,7 @@ class PhoneTextField extends StatefulWidget {
     this.isRequired = true,
     this.showCountryCodeAsIcon = false,
     this.initialValue,
-    this.controller,
+    //this.controller,
     this.focusNode,
     this.decoration = const InputDecoration(labelText: "Phone number"),
     this.locale = const Locale('en', ''),
@@ -170,6 +170,8 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
   late String number;
 
   String? validatorMessage;
+
+  late TextEditingController controller;
 
   @override
   void initState() {
@@ -230,7 +232,12 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
           RegExp("^${_selectedCountry.fullCountryCode}"),
           "",
         );
+
+        if (number.startsWith('0')) {
+          number = number.replaceFirst('0', '');
+        }
       }
+      controller = TextEditingController(text: number);
     } catch (e) {
       _selectedCountry = _countryList.first;
     }
@@ -239,10 +246,9 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: (widget.controller == null) ? number : null,
       style: widget.textStyle,
       textAlign: widget.textAlign,
-      controller: widget.controller,
+      controller: controller,
       focusNode: widget.focusNode,
       decoration: widget.showCountryCodeAsIcon
           ? widget.decoration.copyWith(
@@ -264,6 +270,11 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
               counterText: '',
             ),
       onChanged: (value) async {
+        if (value.startsWith('0')) {
+          controller.text = value.replaceFirst('0', '');
+          value = value.replaceFirst('0', '');
+        }
+
         final phoneNumber = PhoneNumber(
           countryISOCode: _selectedCountry.code,
           countryCode: '+${_selectedCountry.fullCountryCode}',

@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   textScaleFactor: 1.5,
                 ),
                 PhoneTextField(
-                  initialValue: '+201090718223',
+                  initialValue: '+2001090718223',
                   initialCountryCode: '+971',
                   countryViewOptions: CountryViewOptions.countryCodeOnly,
                   showCountryCodeAsIcon: true,
