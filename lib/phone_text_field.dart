@@ -172,6 +172,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
   String? validatorMessage;
 
   late TextEditingController controller;
+  int maxLength = 0;
 
   @override
   void initState() {
@@ -232,12 +233,11 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
           RegExp("^${_selectedCountry.fullCountryCode}"),
           "",
         );
-
-        if (number.startsWith('0')) {
-          number = number.replaceFirst('0', '');
-        }
       }
       controller = TextEditingController(text: number);
+      maxLength = number.toString().startsWith('0')
+          ? _selectedCountry.maxLength + 1
+          : _selectedCountry.maxLength;
     } catch (e) {
       _selectedCountry = _countryList.first;
     }
@@ -270,11 +270,13 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
               counterText: '',
             ),
       onChanged: (value) async {
-        if (value.startsWith('0')) {
-          controller.text = value.replaceFirst('0', '');
-          value = value.replaceFirst('0', '');
-        }
-
+        setState(() {
+          if (value.startsWith('0')) {
+            maxLength = _selectedCountry.maxLength + 1;
+          } else {
+            maxLength = _selectedCountry.maxLength;
+          }
+        });
         final phoneNumber = PhoneNumber(
           countryISOCode: _selectedCountry.code,
           countryCode: '+${_selectedCountry.fullCountryCode}',
@@ -286,8 +288,12 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
       validator: (value) {
         if (widget.isRequired || value!.isNotEmpty) {
           if (!widget.disableLengthCheck && value != null) {
-            return value.length >= _selectedCountry.minLength &&
-                    value.length <= _selectedCountry.maxLength
+            return (_selectedCountry.maxLength != maxLength
+                        ? value.length >= (maxLength)
+                        : value.length >= _selectedCountry.minLength) &&
+                    (_selectedCountry.maxLength != maxLength
+                        ? value.length <= (maxLength)
+                        : value.length <= _selectedCountry.maxLength)
                 ? null
                 : widget.invalidNumberMessage;
           }
@@ -297,7 +303,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
           return null;
         }
       },
-      maxLength: widget.disableLengthCheck ? null : _selectedCountry.maxLength,
+      maxLength: widget.disableLengthCheck ? null : maxLength,
       keyboardType: TextInputType.phone,
       enabled: widget.enabled,
       autofocus: widget.autofocus,

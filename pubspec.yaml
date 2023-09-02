@@ -1,6 +1,6 @@
 name: phone_text_field
 description: Phone Number TextFiled is a Flutter plugin that allows you to parse, validate, format and other utilities for to international phone numbers and allow localization.
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/MohamedAbd0/phone_text_field
 
 environment:
