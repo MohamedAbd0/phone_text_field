@@ -28,6 +28,7 @@ This guide explains how to deploy the Phone Text Field demo to GitHub Pages usin
 ### 3. Deploy the Demo
 
 The GitHub Action will automatically trigger when you:
+
 - Push to the `main` branch
 - Create a pull request
 - Manually trigger via **Actions** tab
@@ -35,6 +36,7 @@ The GitHub Action will automatically trigger when you:
 ## 🌐 Access Your Demo
 
 After successful deployment, your demo will be available at:
+
 ```
 https://yourusername.github.io/phone_text_field/
 ```
@@ -52,6 +54,7 @@ The deployment workflow includes:
 ## 📱 Build Configuration
 
 The workflow builds the Flutter web app with:
+
 - **Base href**: `/phone_text_field/` for GitHub Pages
 - **Release mode**: Optimized for production
 - **Web renderer**: Auto (uses CanvasKit when beneficial)
@@ -59,20 +62,25 @@ The workflow builds the Flutter web app with:
 ## 🛠️ Customization
 
 ### Change Base URL
+
 If your repository name is different, update the workflow:
+
 ```yaml
 flutter build web --release --base-href="/your-repo-name/"
 ```
 
 ### Update Flutter Version
+
 Modify the workflow file to use a specific Flutter version:
+
 ```yaml
-flutter-version: '3.24.0'  # Change to desired version
+flutter-version: "3.24.0" # Change to desired version
 ```
 
 ## 📊 Monitoring
 
 Monitor deployment status:
+
 1. Go to **Actions** tab in your repository
 2. Check the latest workflow run
 3. View logs for any issues
@@ -82,9 +90,11 @@ Monitor deployment status:
 ### Common Issues
 
 1. **Permission Denied**
+
    - Check workflow permissions in Settings → Actions
 
 2. **Build Fails**
+
    - Check Flutter version compatibility
    - Ensure all dependencies are available
 
@@ -105,6 +115,7 @@ Monitor deployment status:
 ## 🎯 Next Steps
 
 After successful deployment:
+
 - ✅ Update README.md with your demo URL
 - ✅ Share the demo link on pub.dev
 - ✅ Add the URL to your repository description

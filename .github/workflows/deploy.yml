@@ -2,9 +2,9 @@ name: Deploy Flutter Web to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -19,42 +19,42 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.24.0'
-        channel: 'stable'
-        cache: true
-        
-    - name: Get dependencies
-      working-directory: ./example
-      run: flutter pub get
-      
-    - name: Analyze code
-      working-directory: ./example
-      run: flutter analyze
-      
-    - name: Run tests
-      working-directory: ./example
-      run: flutter test
-      
-    - name: Build web
-      working-directory: ./example
-      run: |
-        flutter build web --release --base-href="/phone_text_field/"
-        
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-      
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: './example/build/web'
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.0"
+          channel: "stable"
+          cache: true
+
+      - name: Get dependencies
+        working-directory: ./example
+        run: flutter pub get
+
+      - name: Analyze code
+        working-directory: ./example
+        run: flutter analyze
+
+      - name: Run tests
+        working-directory: ./example
+        run: flutter test
+
+      - name: Build web
+        working-directory: ./example
+        run: |
+          flutter build web --release --base-href="/phone_text_field/"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./example/build/web"
 
   deploy:
     environment:
