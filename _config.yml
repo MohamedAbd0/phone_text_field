@@ -1,0 +1,20 @@
+# GitHub Pages Configuration
+
+# This file is used by GitHub Pages to configure the deployment
+# The actual deployment is handled by GitHub Actions workflow
+
+# Build settings
+source: example/build/web
+destination: _site
+
+# Jekyll settings (disabled since we're using Flutter web)
+plugins: []
+markdown: kramdown
+
+# Exclude files from processing
+exclude:
+  - .github/
+  - .gitignore
+  - README.md
+  - pubspec.yaml
+  - analysis_options.yaml

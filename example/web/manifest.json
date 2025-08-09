@@ -1,11 +1,11 @@
 {
-    "name": "example",
-    "short_name": "example",
+    "name": "Phone Text Field Demo",
+    "short_name": "Phone Field",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#2196F3",
+    "theme_color": "#2196F3",
+    "description": "Interactive demo of Flutter phone text field package with international phone number input, validation, and country selection.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
