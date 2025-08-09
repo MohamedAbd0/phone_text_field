@@ -48,6 +48,39 @@ jobs:
         run: |
           flutter build web --release --base-href="/phone_text_field/"
 
+      - name: Fix base href for GitHub Pages
+        working-directory: ./example
+        run: |
+          # Ensure the base href is correctly set
+          sed -i 's|<base href="$FLUTTER_BASE_HREF">|<base href="/phone_text_field/">|g' build/web/index.html
+          # Add proper meta tags for GitHub Pages
+          sed -i 's|<title>Phone Text Field Demo - Flutter Package</title>|<title>Phone Text Field Demo - Flutter Package</title>\n  <script>\n    // GitHub Pages SPA redirect handling\n    (function(l) {\n      if (l.search[1] === "/" ) {\n        var decoded = sessionStorage.redirect && sessionStorage.redirect.split("?")[0];\n        if (decoded) {\n          sessionStorage.removeItem("redirect");\n          l.replace(l.protocol + "//" + l.hostname + (l.port ? ":" + l.port : "") + decoded + l.hash);\n        }\n      }\n    }(window.location))\n  </script>|g' build/web/index.html
+          # Create 404.html for SPA routing
+          cat > build/web/404.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Phone Text Field Demo</title>
+              <script>
+                // GitHub Pages redirect handling for SPA
+                sessionStorage.redirect = location.href;
+              </script>
+              <meta http-equiv="refresh" content="0;URL='/phone_text_field/'">
+            </head>
+            <body>
+              <p>Redirecting to Phone Text Field Demo...</p>
+            </body>
+          </html>
+          EOF
+          # Add .nojekyll to disable Jekyll processing
+          touch build/web/.nojekyll
+          # Verify the build output
+          echo "Built files:"
+          ls -la build/web/
+          echo "Index.html content (first 10 lines):"
+          head -10 build/web/index.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
