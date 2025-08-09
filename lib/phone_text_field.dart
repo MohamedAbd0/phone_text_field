@@ -29,7 +29,7 @@ class PhoneTextField extends StatefulWidget {
   /// Controls the text being edited.
   ///
   /// If null, this widget will create its own [TextEditingController].
-  //final TextEditingController? controller;
+  final TextEditingController? controller;
 
   final FocusNode? focusNode;
 
@@ -139,7 +139,7 @@ class PhoneTextField extends StatefulWidget {
     this.isRequired = true,
     this.showCountryCodeAsIcon = false,
     this.initialValue,
-    //this.controller,
+    this.controller,
     this.focusNode,
     this.decoration = const InputDecoration(labelText: "Phone number"),
     this.locale = const Locale('en', ''),
@@ -171,7 +171,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
 
   String? validatorMessage;
 
-  late TextEditingController controller;
+  late TextEditingController _controller;
   int maxLength = 0;
 
   @override
@@ -193,6 +193,9 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
       _countryList = unSortcountryList;
       filteredCountries = _countryList;
       number = widget.initialValue ?? '';
+
+      // Initialize with first country as fallback
+      _selectedCountry = _countryList.first;
 
       if (widget.initialCountryCode != null) {
         final initCode = widget.initialCountryCode!.replaceAll('+', '');
@@ -222,11 +225,24 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
       }
 
       if (number.length > 1) {
-        // parse initial value
-        _selectedCountry = countries.firstWhere(
-          (country) => number.startsWith(country.dialCode),
-          orElse: () => _countryList.first,
-        );
+        // parse initial value - try to preserve current selection if it matches
+        final matchingCountries = countries
+            .where((country) => number.startsWith(country.dialCode))
+            .toList();
+
+        if (matchingCountries.isNotEmpty) {
+          // If current selected country is in the matching list, keep it
+          if (matchingCountries
+              .any((country) => country.code == _selectedCountry.code)) {
+            _selectedCountry = matchingCountries
+                .firstWhere((country) => country.code == _selectedCountry.code);
+          } else {
+            // Otherwise, pick the first match
+            _selectedCountry = matchingCountries.first;
+          }
+        } else {
+          _selectedCountry = _countryList.first;
+        }
 
         // remove country code from the initial number value
         number = number.replaceFirst(
@@ -234,13 +250,25 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
           "",
         );
       }
-      controller = TextEditingController(text: number);
+      _controller = widget.controller ?? TextEditingController(text: number);
       maxLength = number.toString().startsWith('0')
           ? _selectedCountry.maxLength + 1
           : _selectedCountry.maxLength;
     } catch (e) {
+      // Fallback initialization if something goes wrong
       _selectedCountry = _countryList.first;
+      _controller = widget.controller ?? TextEditingController();
+      maxLength = _selectedCountry.maxLength;
     }
+  }
+
+  @override
+  void dispose() {
+    // Only dispose if we created the controller
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -248,7 +276,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
     return TextFormField(
       style: widget.textStyle,
       textAlign: widget.textAlign,
-      controller: controller,
+      controller: _controller,
       focusNode: widget.focusNode,
       decoration: widget.showCountryCodeAsIcon
           ? widget.decoration.copyWith(
@@ -374,8 +402,6 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
         return '${_selectedCountry.flag} +${_selectedCountry.dialCode}';
       case CountryViewOptions.countryNameWithFlag:
         return '${_selectedCountry.flag} ${_selectedCountry.name}';
-      default:
-        return '+${_selectedCountry.dialCode}';
     }
   }
 }
